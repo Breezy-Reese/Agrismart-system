@@ -96,7 +96,7 @@ const ProductDetail = () => {
 
           <div className="mb-4">
             <span className="text-2xl font-bold text-green-600">
-              ${product.price} per {product.unit}
+              KES {product.price} per {product.unit}
             </span>
           </div>
 

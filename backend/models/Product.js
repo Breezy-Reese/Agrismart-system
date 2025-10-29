@@ -13,6 +13,10 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  currency: {
+    type: String,
+    default: 'KES',
+  },
   category: {
     type: String,
     required: true,

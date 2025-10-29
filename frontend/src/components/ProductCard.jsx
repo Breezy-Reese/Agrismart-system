@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
 
         <div className="flex justify-between items-center mb-2">
           <span className="text-green-600 font-bold">
-            ${product.price} per {product.unit}
+            KES {product.price} per {product.unit}
           </span>
           <span className="text-sm text-gray-500">
             {product.quantity} {product.unit} available
