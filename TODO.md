@@ -10,6 +10,7 @@
 - [x] Start backend server
 - [x] Start frontend server
 - [x] Test M-Pesa payment flow
+- [x] Fix login issue by changing API base URL to localhost
 
 ## Completed
 - [x] Analyze errors: Stripe key missing, M-Pesa route 404
