@@ -22,7 +22,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "https://agrismart-system.vercel.app/", // allow frontend or all origins
+    origin: process.env.CLIENT_URL || "https://agrismart-system.vercel.app", // allow frontend or all origins
     credentials: true,
   })
 );
