@@ -61,6 +61,12 @@ router.post("/initiate-mpesa-payment", protect, async (req, res) => {
     console.log("🔑 Consumer Key:", consumerKey);
     console.log("🕵️‍♂️ Consumer Secret:", consumerSecret);
 
+    // Convert phone number to international format if it starts with 0
+    let formattedPhoneNumber = phoneNumber;
+    if (phoneNumber.startsWith('0')) {
+      formattedPhoneNumber = '254' + phoneNumber.substring(1);
+    }
+
     // Generate base64 encoded credentials
     const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString("base64");
 
@@ -100,12 +106,12 @@ router.post("/initiate-mpesa-payment", protect, async (req, res) => {
     Timestamp: timestamp,
     TransactionType: "CustomerPayBillOnline",
     Amount: Math.round(amount),
-    PartyA: phoneNumber,
+    PartyA: formattedPhoneNumber,
     PartyB: process.env.MPESA_SHORTCODE,
-    PhoneNumber: phoneNumber,
+    PhoneNumber: formattedPhoneNumber,
     CallBackURL: `${process.env.BASE_URL}/api/orders/mpesa-callback`,
-    AccountReference: `Agrismart Order-${orderId}`, // <-- custom name
-    TransactionDesc: `Payment for Agrismart order #${orderId}`, // <-- custom description
+    AccountReference: `Order-${orderId}`,
+    TransactionDesc: `Payment for Agrismart order #${orderId}`,
   },
   {
     headers: { Authorization: `Bearer ${accessToken}` },
