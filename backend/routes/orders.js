@@ -50,13 +50,27 @@ router.post("/", protect, async (req, res) => {
 router.post("/initiate-mpesa-payment", protect, async (req, res) => {
   const { amount, phoneNumber, orderId } = req.body;
 
+  // Check for required environment variables
+  const requiredEnvVars = [
+    'MPESA_CONSUMER_KEY',
+    'MPESA_CONSUMER_SECRET',
+    'MPESA_SHORTCODE',
+    'MPESA_PASSKEY',
+    'BASE_URL'
+  ];
+
+  const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
+
+  if (missingVars.length > 0) {
+    console.error("Missing environment variables:", missingVars);
+    return res.status(500).json({
+      message: `Missing required environment variables: ${missingVars.join(', ')}`
+    });
+  }
+
   try {
     const consumerKey = process.env.MPESA_CONSUMER_KEY;
     const consumerSecret = process.env.MPESA_CONSUMER_SECRET;
-
-    if (!consumerKey || !consumerSecret) {
-      throw new Error("Missing M-Pesa credentials in .env file");
-    }
 
     console.log("🔑 Consumer Key:", consumerKey);
     console.log("🕵️‍♂️ Consumer Secret:", consumerSecret);
@@ -123,7 +137,22 @@ router.post("/initiate-mpesa-payment", protect, async (req, res) => {
       response: stkPushResponse.data,
     });
   } catch (error) {
-    console.error("❌ M-Pesa STK Push Error:", error.response?.data || error.message);
+    console.error("❌ M-Pesa STK Push Error:", {
+      message: error.message,
+      response: error.response?.data,
+      status: error.response?.status,
+      stack: error.stack
+    });
+
+    // Return more specific error messages
+    if (error.response?.status === 401) {
+      return res.status(500).json({ message: "M-Pesa authentication failed. Check credentials." });
+    } else if (error.response?.status === 400) {
+      return res.status(400).json({ message: "Invalid payment request parameters." });
+    } else if (error.code === 'ENOTFOUND' || error.code === 'ECONNREFUSED') {
+      return res.status(500).json({ message: "Unable to connect to M-Pesa servers." });
+    }
+
     res.status(500).json({ message: "Failed to initiate M-Pesa payment" });
   }
 });
