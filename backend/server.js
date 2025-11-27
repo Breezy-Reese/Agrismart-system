@@ -22,7 +22,7 @@ const app = express();
 // Middleware
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "*", // allow frontend or all origins
+    origin: process.env.CLIENT_URL || "https://agrismart-system.vercel.app/", // allow frontend or all origins
     credentials: true,
   })
 );
@@ -56,7 +56,7 @@ app.use((req, res) => {
 
 // Server setup
 const PORT = process.env.PORT || 5000;
-const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+const BASE_URL = process.env.BASE_URL || 'https://agrismart-system.onrender.com';
 
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
